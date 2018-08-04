@@ -11,7 +11,7 @@ package notification.android.tutos.com.quiz;
         import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
-
+    public static final String MESSAGE= "nom";
     private TextView mGreetingText;
     private EditText mNameInput;
     private Button mPlayButton;
@@ -51,10 +51,14 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View view) {
 
             Intent gameActivity = new Intent(MainActivity.this, Main2Activity.class);
-            startActivity(gameActivity);
+
             mUser.setmFirstName(mNameInput.getText().toString());
+            gameActivity.putExtra(MESSAGE, mNameInput.getText().toString());
+
+            startActivityForResult(gameActivity,0);
         }
     });
 
     }
 }
+

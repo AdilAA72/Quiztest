@@ -1,6 +1,8 @@
 package notification.android.tutos.com.quiz;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,7 +17,7 @@ import java.util.Arrays;
 public class Main2Activity extends AppCompatActivity {
 
 
-
+   // public static final String MESSAGE= "score";
     Question question1 = new Question("Who is the creator of Android?",
             Arrays.asList("Andy Rubin",
                     "Steve Wozniak",
@@ -71,21 +73,40 @@ public class Main2Activity extends AppCompatActivity {
 
     }
     public void reLoad(Question question ) {
+        if (indice <3 ) {
 
-        titre = (TextView) findViewById(R.id.activity_game_question_text);
-        String titre1 =  questionsnBank.getmQuestionList().get(indice).getmQuestion();
+            titre = (TextView) findViewById(R.id.activity_game_question_text);
+            String titre1 = questionsnBank.getmQuestionList().get(indice).getmQuestion();
+            titre.setText(titre1);
+            ansewr1 = (Button) findViewById(R.id.activity_game_answer1_btn);
+            ansewr2 = (Button) findViewById(R.id.activity_game_answer2_btn);
+            ansewr3 = (Button) findViewById(R.id.activity_game_answer3_btn);
+            ansewr4 = (Button) findViewById(R.id.activity_game_answer4_btn);
+            ansewr1.setText(questionsnBank.getmQuestionList().get(indice).getmChoiceList().get(0));
+            ansewr2.setText(questionsnBank.getmQuestionList().get(indice).getmChoiceList().get(1));
+            ansewr3.setText(questionsnBank.getmQuestionList().get(indice).getmChoiceList().get(2));
+            ansewr4.setText(questionsnBank.getmQuestionList().get(indice).getmChoiceList().get(3));
 
-        titre.setText(titre1);
-        ansewr1 = (Button) findViewById(R.id.activity_game_answer1_btn);
-        ansewr2 = (Button) findViewById(R.id.activity_game_answer2_btn);
-        ansewr3 = (Button) findViewById(R.id.activity_game_answer3_btn);
-        ansewr4 = (Button) findViewById(R.id.activity_game_answer4_btn);
-        ansewr1.setText(questionsnBank.getmQuestionList().get(indice).getmChoiceList().get(0));
-        ansewr2.setText(questionsnBank.getmQuestionList().get(indice).getmChoiceList().get(1));
-        ansewr3.setText(questionsnBank.getmQuestionList().get(indice).getmChoiceList().get(2));
-        ansewr4.setText(questionsnBank.getmQuestionList().get(indice).getmChoiceList().get(3));
-
-
+        }
+        else{
+            AlertDialog.Builder builder =new AlertDialog.Builder(this);
+            final  Intent intent = getIntent();
+            String nom = intent.getStringExtra(MainActivity.MESSAGE);
+            builder.setTitle("Score "+nom)
+                    .setMessage(" Votre score est :"+ score)
+                    .setPositiveButton ("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            finish();
+                        }
+                    })
+                    .create()
+                    .show();
+            //Intent intent =  new Intent(Main2Activity.this,FinActivity.class);
+             // intent.putExtra(MESSAGE,score);
+           // startActivityForResult(intent,0);
+           // startActivity(intent
+        }
 
     }
     private View.OnClickListener listchoix = new View.OnClickListener() {
@@ -170,9 +191,7 @@ public class Main2Activity extends AppCompatActivity {
 
                         score ++ ;
                         Toast.makeText(Main2Activity.this, "True", Toast.LENGTH_SHORT).show();
-
-
-
+                        mNumberOfQuestions -= 1;
 
 
 
@@ -181,11 +200,9 @@ public class Main2Activity extends AppCompatActivity {
 
                         Toast.makeText(Main2Activity.this, "False", Toast.LENGTH_SHORT).show();
                     }
-                    Intent intent =  new Intent(Main2Activity.this,FinActivity.class);
-                  //  intent.putExtra("score",score);
-                    mNumberOfQuestions -= 1;
-                    startActivity(intent);
 
+
+                    reLoad(questionsnBank.getmQuestionList().get(indice++));
                     break;
 
                 default:
@@ -195,4 +212,4 @@ public class Main2Activity extends AppCompatActivity {
 
         }
     };
-}
+
