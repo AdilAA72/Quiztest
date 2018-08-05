@@ -1,12 +1,10 @@
 package notification.android.tutos.com.quiz;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -18,6 +16,7 @@ public class Main2Activity extends AppCompatActivity {
 
 
    // public static final String MESSAGE= "score";
+
     Question question1 = new Question("Who is the creator of Android?",
             Arrays.asList("Andy Rubin",
                     "Steve Wozniak",
@@ -39,6 +38,9 @@ public class Main2Activity extends AppCompatActivity {
                     "742"),
             3);
 
+    Question mesQuestion = new Question();
+
+
     QuestionBank<Question>  questionsnBank =   new QuestionBank<Question>(Arrays.asList(question1,question2,question3))  ;
 
     private TextView titre;
@@ -46,7 +48,7 @@ public class Main2Activity extends AppCompatActivity {
     private Button ansewr2;
     private Button ansewr3;
     private Button ansewr4;
-    public int mNumberOfQuestions = 4;
+    public int mNumberOfQuestions = 3;
     int indice =questionsnBank.getmNextQuestionIndex();
     public int score= 0 ;
 
@@ -73,7 +75,7 @@ public class Main2Activity extends AppCompatActivity {
 
     }
     public void reLoad(Question question ) {
-        if (indice <3 ) {
+        if (mNumberOfQuestions != 0 ) {
 
             titre = (TextView) findViewById(R.id.activity_game_question_text);
             String titre1 = questionsnBank.getmQuestionList().get(indice).getmQuestion();
@@ -90,28 +92,34 @@ public class Main2Activity extends AppCompatActivity {
         }
         else{
             AlertDialog.Builder builder =new AlertDialog.Builder(this);
+            View mview = getLayoutInflater().inflate(R.layout.activity_fin, null);
+            final TextView textViewscore = (TextView) mview.findViewById(R.id.score);
+            final TextView textViewnom = (TextView) mview.findViewById(R.id.nom);
+            final Button buttonRetout = (Button) mview.findViewById(R.id.retour);
             final  Intent intent = getIntent();
             String nom = intent.getStringExtra(MainActivity.MESSAGE);
-            builder.setTitle("Score "+nom)
-                    .setMessage(" Votre score est :"+ score)
-                    .setPositiveButton ("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            finish();
-                        }
-                    })
-                    .create()
-                    .show();
-            //Intent intent =  new Intent(Main2Activity.this,FinActivity.class);
-             // intent.putExtra(MESSAGE,score);
-           // startActivityForResult(intent,0);
-           // startActivity(intent
-        }
+            textViewscore.setText("Votre score est : "+score);
+            textViewnom.setText(nom);
+            builder.setView(mview);
+            AlertDialog alartDialog = builder.create();
+            alartDialog.show();
+            buttonRetout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    Intent intent =  new Intent(Main2Activity.this,MainActivity.class);
+                    //intent.putExtra(MESSAGE,score);
+                    // startActivityForResult(intent,0);
+                    startActivity(intent);
+
+                }
+            });
+
+            }
 
     }
     private View.OnClickListener listchoix = new View.OnClickListener() {
         public static final String TAG = "Test";
-
         @Override
         public void onClick(View view) {
 
@@ -135,7 +143,15 @@ public class Main2Activity extends AppCompatActivity {
                        else {
                            Toast.makeText(Main2Activity.this, "False", Toast.LENGTH_SHORT).show();}
                           mNumberOfQuestions -= 1;
-                   reLoad(questionsnBank.getmQuestionList().get(indice++));
+                   new Handler().postDelayed(new Runnable() {
+                       @Override
+                       public void run() {
+
+                           reLoad(questionsnBank.getmQuestionList().get(indice++));
+
+                       }
+                   },500);
+
                     break;
 
 
@@ -155,9 +171,17 @@ public class Main2Activity extends AppCompatActivity {
                     }
                     else {
                         Toast.makeText(Main2Activity.this, "False", Toast.LENGTH_SHORT).show();}
+                    mNumberOfQuestions -- ;
 
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
 
-                    reLoad(questionsnBank.getmQuestionList().get(indice++));
+                            reLoad(questionsnBank.getmQuestionList().get(indice++));
+
+                        }
+                    },500);
+
                     break ;
 
                 case R.id.activity_game_answer3_btn :
@@ -177,7 +201,14 @@ public class Main2Activity extends AppCompatActivity {
                     else {
                         Toast.makeText(Main2Activity.this, "False", Toast.LENGTH_SHORT).show();}
                     mNumberOfQuestions -= 1;
-                    reLoad(questionsnBank.getmQuestionList().get(indice++));
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            reLoad(questionsnBank.getmQuestionList().get(indice++));
+
+                        }
+                    },500);
 
                     break;
 
@@ -202,7 +233,14 @@ public class Main2Activity extends AppCompatActivity {
                     }
 
 
-                    reLoad(questionsnBank.getmQuestionList().get(indice++));
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            reLoad(questionsnBank.getmQuestionList().get(indice++));
+
+                        }
+                    },500);
                     break;
 
                 default:
@@ -212,4 +250,4 @@ public class Main2Activity extends AppCompatActivity {
 
         }
     };
-
+}
