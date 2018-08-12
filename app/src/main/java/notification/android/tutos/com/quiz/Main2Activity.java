@@ -1,8 +1,10 @@
 package notification.android.tutos.com.quiz;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -10,7 +12,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Main2Activity extends AppCompatActivity {
 
@@ -48,9 +52,12 @@ public class Main2Activity extends AppCompatActivity {
     private Button ansewr2;
     private Button ansewr3;
     private Button ansewr4;
-    public int mNumberOfQuestions = 3;
+    public Integer mNumberOfQuestions = 3;
     int indice =questionsnBank.getmNextQuestionIndex();
-    public int score= 0 ;
+    public Integer score =0;
+    public Integer i = 0;
+    public static final String SCORE= "score";
+    public static final String NAME ="name";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,12 +65,6 @@ public class Main2Activity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-
-       // Intent intent = getIntent();
-        //Integer value = Integer.parseInt(intent.getStringExtra("key"));
-        //String titre2 = question2.getmQuestion();
-        //String titre3 = question3.getmQuestion();
-
         reLoad(questionsnBank.getmQuestionList().get(indice));
 
         ansewr1.setOnClickListener(listchoix);
@@ -75,6 +76,7 @@ public class Main2Activity extends AppCompatActivity {
 
     }
     public void reLoad(Question question ) {
+
         if (mNumberOfQuestions != 0 ) {
 
             titre = (TextView) findViewById(R.id.activity_game_question_text);
@@ -97,20 +99,25 @@ public class Main2Activity extends AppCompatActivity {
             final TextView textViewnom = (TextView) mview.findViewById(R.id.nom);
             final Button buttonRetout = (Button) mview.findViewById(R.id.retour);
             final  Intent intent = getIntent();
-            String nom = intent.getStringExtra(MainActivity.MESSAGE);
+            final String nom = intent.getStringExtra(MainActivity.MESSAGE);
             textViewscore.setText("Votre score est : "+score);
             textViewnom.setText(nom);
             builder.setView(mview);
-            AlertDialog alartDialog = builder.create();
+            final AlertDialog alartDialog = builder.create();
             alartDialog.show();
+
             buttonRetout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    Bundle bundle = new Bundle();
+                    Bundle bundel1 = new Bundle();
+                    bundle.putInt(Main2Activity.SCORE, score);
+                    bundle.putString(Main2Activity.NAME,nom);
+                    intent.putExtras(bundel1);
+                    intent.putExtras(bundle);
+                    setResult(Activity.RESULT_OK, intent);
+                    finish();
 
-                    Intent intent =  new Intent(Main2Activity.this,MainActivity.class);
-                    //intent.putExtra(MESSAGE,score);
-                    // startActivityForResult(intent,0);
-                    startActivity(intent);
 
                 }
             });
